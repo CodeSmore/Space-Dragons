@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bba891fd7792ad949bb5434551d17a86
+timeCreated: 1431685152
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - normSprite: {fileID: 21300000, guid: b5d30524ab128124882ce1f2fc4801ae, type: 3}
+  - hitSprite: {fileID: 21300000, guid: 5bb1b79c91648d84eb9d6e1f7f216ea5, type: 3}
+  - projectile: {fileID: 157384, guid: 81d119ab7893f4245a5207b2f936bb52, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
