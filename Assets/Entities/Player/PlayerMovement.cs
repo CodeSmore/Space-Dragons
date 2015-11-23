@@ -60,7 +60,7 @@ public class PlayerMovement : MonoBehaviour {
 	private void MoveWithFinger () {
 		// Captures the current possition of the ship
 		Vector3 shipPos = new Vector3 (Input.mousePosition.x / Screen.width * 18.4f, 
-									   Input.mousePosition.y / Screen.height * 27.2f + .7f, 
+									   Input.mousePosition.y / Screen.height * 27.2f + 2f, 
 									   transform.position.z);
 									   
 		
