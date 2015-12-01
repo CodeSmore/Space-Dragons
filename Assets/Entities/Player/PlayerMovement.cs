@@ -11,11 +11,14 @@ public class PlayerMovement : MonoBehaviour {
 	// X position values that mark the booundaries
 	// the player ship can move.
 	private float xMin, xMax, yMin, yMax;
+	private Vector2 shipOffset = new Vector2 (0f, 2.0f);
 	private float timer = 0;
 	private static bool playMode = true;
 	private GameObject menuIcon;
+	private GameObject gameController;
 	
 	void Awake () {
+		gameController = GameObject.Find ("Game Controller");
 		menuIcon = GameObject.Find ("Pause Button");
 	}
 	void Start () {
@@ -67,10 +70,15 @@ public class PlayerMovement : MonoBehaviour {
 			menuIcon.SetActive (false);
 			timer = 0;
 			Time.timeScale = 1;
+			
+			// Fade In
+			gameController.GetComponent<FadeTextureController>().BeginFade (-1);
+			
+			// Move
 			MoveWithFinger ();
 		} else {
 			menuIcon.SetActive (true);
-			timer += Time.deltaTime;
+			timer += Time.deltaTime * 2;
 			
 			if (timer > .9f) 
 				timer = .9f;
@@ -78,6 +86,9 @@ public class PlayerMovement : MonoBehaviour {
 			Time.timeScale = 1 - timer;
 			
 			playMode = false;
+			
+			// Fade Out
+			gameController.GetComponent<FadeTextureController>().BeginFade (1);
 		}
 	}
 	private void MoveWithFinger () {
@@ -102,8 +113,8 @@ public class PlayerMovement : MonoBehaviour {
 		Vector3 shipPos = Vector3.Lerp (
 										gameObject.transform.position, 
 										new Vector3 (
-											Mathf.Clamp (mousePos.x, xMin, xMax), 
-									  	    Mathf.Clamp (mousePos.y + 2f, yMin, yMax), 
+											Mathf.Clamp (mousePos.x + shipOffset.x, xMin, xMax), 
+									  	    Mathf.Clamp (mousePos.y + shipOffset.y, yMin, yMax), 
 									   		transform.position.z
 									   	),
 									   	Time.deltaTime * speed
