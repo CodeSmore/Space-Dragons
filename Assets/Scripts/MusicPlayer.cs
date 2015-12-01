@@ -53,7 +53,7 @@ public class MusicPlayer : MonoBehaviour {
 		// Extra: Advised not to use this when order is of utmost importance. 
 		// Here, it is not.
 		if (paused == false) {
-			if (music.clip == endClip && level == 1) {
+			if (music.clip != startClip && level == 1) {
 				music.Stop ();
 				music.clip = startClip;
 				music.loop = true;
@@ -65,9 +65,9 @@ public class MusicPlayer : MonoBehaviour {
 				
 				// Changes 
 				
-				if (level == 4) {
+				if (level >= 4 && level <= 6) {
 					music.clip = gameClip;
-				} else if (level >= 5) {
+				} else if (level >= 7) {
 					music.clip = endClip;
 				}
 				

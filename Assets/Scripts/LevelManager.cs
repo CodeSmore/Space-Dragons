@@ -3,9 +3,11 @@ using System.Collections;
 
 public class LevelManager : MonoBehaviour {
 
+	void Start () {
+		Time.timeScale = 1;
+	}
 	// Loads a new scene based on the entered name.
 	public void LoadLevel(string name){
-		Debug.Log ("New Level load: " + name);
 		Application.LoadLevel (name);
 	}
 

@@ -211,6 +211,9 @@ public class PlayerController : MonoBehaviour {
 				Destroy (myShield);
 			} else {
 				curHealth -= 100;
+				
+				// Plays damage sound effect
+				playerSounds.PlayerDamageSound ();
 			}
 			
 		} else if (!myShield && missile && missile.tag != "PlayerLaser") {
@@ -219,11 +222,11 @@ public class PlayerController : MonoBehaviour {
 			// Sprite changes to all white on impact
 			this.GetComponent<SpriteRenderer>().sprite = hitSprite;
 			timer = 0;
+			
+			// Plays damage sound effect
+			playerSounds.PlayerDamageSound ();
 		}
 		
-		
-		// Plays damage sound effect
-		playerSounds.PlayerDamageSound ();
 		
 		// Once health reaches zero or below, the player object is destroyed
 		// and the 'Win Screen' scene is loaded.

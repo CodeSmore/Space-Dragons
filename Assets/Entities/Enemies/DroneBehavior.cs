@@ -79,8 +79,6 @@ public class DroneBehavior : MonoBehaviour {
 		float probability = dropRate;
 		float random = Random.value;
 		
-		Debug.Log ("probability: " + probability);
-		Debug.Log ("random: " + random);
 		if (numEnemiesDestroyed >= 6 && random <= probability) {
 			DropShit ();
 		}

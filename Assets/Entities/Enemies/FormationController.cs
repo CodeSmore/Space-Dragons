@@ -61,20 +61,13 @@ public class FormationController : MonoBehaviour {
 		// the formation's boundary crosses visible gamespace's boundary.
 		if 	(formationRightEdge > boundaryRightEdge) {
 			direction = -1; 
-			print ("trying to change");
 		}
 		if (formationLeftEdge < boundaryLeftEdge) {
 			direction = 1; 
-			print ("changing back");
 		}
 		// This single statement determines the movement of the formation in the x direction.
 		// Extra: Movement is based on last know position + conversion from /frame to /second * direction (+1 or -1) * speed.
 		
-		Debug.Log ("Boundary Right: " + boundaryRightEdge);
-		Debug.Log ("Formation Right: " + formationRightEdge);
-		
-		Debug.Log ("Boundary Left: " + boundaryLeftEdge);
-		Debug.Log ("Formation Left: " + formationLeftEdge);
 		
 		this.transform.position = new Vector3 (
 			transform.position.x + Time.deltaTime * direction * speed, 

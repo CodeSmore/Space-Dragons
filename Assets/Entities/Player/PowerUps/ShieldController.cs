@@ -8,7 +8,7 @@ public class ShieldController : MonoBehaviour {
 //	}
 	
 	void OnTriggerEnter2D (Collider2D collider) {
-		if (collider.gameObject.tag != "PlayerLaser" && collider.gameObject.tag != "Laserang" && collider.gameObject.tag != "PowerUp" && collider.gameObject.tag != "Formation"	)
+		if (collider.gameObject.tag != "PlayerLaser" && collider.gameObject.tag != "Laserang" && collider.gameObject.tag != "PowerUp" && collider.gameObject.tag != "Formation"	&& collider.gameObject.tag != "DoNotDestroy")
 		Destroy (collider.gameObject);
 	}
 }

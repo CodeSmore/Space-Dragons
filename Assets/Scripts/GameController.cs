@@ -13,11 +13,10 @@ public class GameController : MonoBehaviour {
 	private GameObject f3;
 	private GameObject f4;
 	public float timer = 0;
-	
-	
+		
 	// Use this for initialization
 	void Start () {
-		Instantiate (Formation1, new Vector3 (0, 12, 0), Quaternion.identity);
+		Instantiate (Formation1, new Vector3 (0, 20, 0), Quaternion.identity);
 	}
 	
 	// Update is called once per frame
@@ -25,12 +24,12 @@ public class GameController : MonoBehaviour {
 		timer += Time.deltaTime;
 		if (f4 || timer > 40) {
 		
-		} else if (timer > 30 && !f4) {
-			f4 = Instantiate (Brofist, new Vector3 (0, 12, 0), Quaternion.identity) as GameObject;
+		} else if (timer > 22 && !f4) {
+			f4 = Instantiate (Brofist, new Vector3 (Camera.main.ViewportToWorldPoint (new Vector2 (.5f, .5f)).x, 25, 0), Quaternion.identity) as GameObject;
 		} else if (timer > 15 && !f3) {
-			f3 = Instantiate (Formation3, new Vector3 (0, 12, 0), Quaternion.identity) as GameObject;
+			f3 = Instantiate (Formation3, new Vector3 (0, 20, 0), Quaternion.identity) as GameObject;
 		} else if (timer > 5 && !f2) {
-			f2 = Instantiate (Formation2, new Vector3 (0, 12, 0), Quaternion.identity) as GameObject;
+			f2 = Instantiate (Formation2, new Vector3 (0, 20, 0), Quaternion.identity) as GameObject;
 		}
 	}
 }
