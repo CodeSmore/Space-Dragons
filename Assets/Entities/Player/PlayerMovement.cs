@@ -11,11 +11,14 @@ public class PlayerMovement : MonoBehaviour {
 	// X position values that mark the booundaries
 	// the player ship can move.
 	private float xMin, xMax, yMin, yMax;
+	
+	// Offset of finger to ship, allows player to see the ship b/c it's not under finger.
 	private Vector2 shipOffset = new Vector2 (0f, 2.0f);
 	private float timer = 0;
 	private static bool playMode = true;
 	private GameObject menuIcon;
 	private GameObject gameController;
+	private Camera camera;
 	
 	void Awake () {
 		gameController = GameObject.Find ("Game Controller");
@@ -24,7 +27,7 @@ public class PlayerMovement : MonoBehaviour {
 	void Start () {
 		// A local camera holds the values for the game camera so that boundaries for ship movement 
 		// can be determined. We don't want the ship to leave the view of the player.
-		Camera camera = Camera.main;
+		camera = Camera.main;
 		float distance = transform.position.z - camera.transform.position.z;
 		xMin = camera.ViewportToWorldPoint (new Vector3(0, 0, distance)).x + padding;
 		xMax = camera.ViewportToWorldPoint (new Vector3(1, 1, distance)).x - padding;
@@ -34,7 +37,7 @@ public class PlayerMovement : MonoBehaviour {
 	
 	void Update () {
 		ManipulateGameSpeedAndPauseButton ();
-//		Old Stuff
+//		Old Stuff: Arrow Key Input
 		// If the player presses the left OR right arrow keys...
 //		if (Input.GetKey (KeyCode.LeftArrow)) {
 //			// Then the position of the player is changed to a new Vector3.
@@ -92,22 +95,19 @@ public class PlayerMovement : MonoBehaviour {
 		}
 	}
 	private void MoveWithFinger () {
-		Vector2 mousePos = new Vector2 (Input.mousePosition.x / Screen.width * 18.4f, Input.mousePosition.y / Screen.height * 27.2f);
+		Vector2 mousePos = camera.ScreenToWorldPoint (Input.mousePosition);	
+
+		float speedAdjustment = 1;
 		
-		// Snapping Effect for x
-		if (Mathf.Abs (mousePos.x - transform.position.x) < 1) {
-			transform.position =  Vector3.Lerp (transform.position, new Vector3 (mousePos.x, transform.position.y, transform.position.z), Time.deltaTime * speed * 2f);
-		} else if (Mathf.Abs (mousePos.x - transform.position.x) < 2) {
-			transform.position =  Vector3.Lerp (transform.position, new Vector3 (mousePos.x, transform.position.y, transform.position.z), Time.deltaTime * speed * 1.5f);
+		// Snapping Effect for x and y
+		if (Mathf.Abs (mousePos.x - transform.position.x) < 1 || Mathf.Abs (mousePos.y - transform.position.y) < 1) {
+			speedAdjustment = 2.0f;
+		} else if (Mathf.Abs (mousePos.x - transform.position.x) < 2 || Mathf.Abs (mousePos.y - transform.position.y) < 2) {
+			speedAdjustment = 1.5f;
+		} else {
+			speedAdjustment = 1.0f;
 		}
 		
-		
-		// Snapping Effect for y
-		if (Mathf.Abs (mousePos.y - transform.position.y) < 1) {
-			transform.position =  Vector3.Lerp (transform.position, new Vector3 (transform.position.x, mousePos.y + 2f, transform.position.z), Time.deltaTime * speed * 2f);
-		} else if (Mathf.Abs (mousePos.y - transform.position.y) < 2) {
-			transform.position =  Vector3.Lerp (transform.position, new Vector3 (transform.position.x, mousePos.y + 2f, transform.position.z), Time.deltaTime * speed * 1.5f);
-		}
 		
 		// Standard Lerp for smooth movement
 		Vector3 shipPos = Vector3.Lerp (
@@ -117,11 +117,9 @@ public class PlayerMovement : MonoBehaviour {
 									  	    Mathf.Clamp (mousePos.y + shipOffset.y, yMin, yMax), 
 									   		transform.position.z
 									   	),
-									   	Time.deltaTime * speed
+									   	Time.deltaTime * speed * speedAdjustment
 						  );
 									   
-		
-	
 		transform.position = shipPos;
 	}
 	

@@ -14,11 +14,9 @@ public class FormationController : MonoBehaviour {
 	// The speed the entire formation moves.
 	public float speed = 1;
 	public float downwardsSpeed = 1;
-	private float initialSpeed;
-	private float dieSpeed = 0;
 	
 	// Used to create an extra boundary in case the formation leaves the camera view.
-	public float padding = -2f;
+	private float padding = 0.7f;
 	
 	// Int that acts as a bool for the direction the formation moves; +1 for right or -1 for left.
 	public int direction = 1;
@@ -33,8 +31,6 @@ public class FormationController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
-		initialSpeed = speed;
-		
 		// All formations are present at the beginning, so the others are disabled immediately upon load
 		// until they are called upon.
 //		wave2Formation = GameObject.Find ("EnemyFormation 2");
@@ -81,15 +77,15 @@ public class FormationController : MonoBehaviour {
 	
 	public void UpdateBoundaries () {
 		// Initializes the boundaries of the formation as x positions.
-		bool childrenExist = false;
 		formationLeftEdge = 50;
 		formationRightEdge = 0;
+		int numChildren = 0;
 		
 		foreach (Transform position in transform) {
 			foreach (Transform child in position.transform) {
 				if (child.childCount > 0) {
 					
-					childrenExist = true;
+					numChildren ++;
 					
 					if (formationRightEdge < child.position.x) {
 						formationRightEdge = child.position.x;
@@ -101,11 +97,9 @@ public class FormationController : MonoBehaviour {
 			}
 		}
 				
-		if (!childrenExist) {
-			speed = dieSpeed;
-		} else {
-			speed = initialSpeed; 
-		}
+		if (numChildren == 0) {
+			Destroy(gameObject);
+		} 
 	}
 	
 	// Method used to draw gizmos in the Scene view.

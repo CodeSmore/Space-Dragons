@@ -10,6 +10,14 @@ public class LevelManager : MonoBehaviour {
 	public void LoadLevel(string name){
 		Application.LoadLevel (name);
 	}
+	
+	public void LoadLevel (int level) {
+		Application.LoadLevel (level);
+	}
+	
+	public void LoadNextLevel () {
+		Application.LoadLevel (Application.loadedLevel + 1);
+	}
 
 	// Quits the game. Only works in finished builds.
 	public void QuitRequest(){

@@ -7,7 +7,6 @@ public class HealthBar : MonoBehaviour {
 	private float currentHealth;
 	private float maxHealth;
 	private float healthRatio;
-	private float healthBarHeight = 1;
 	
 	private Image healthBarImage;
 	
@@ -17,8 +16,6 @@ public class HealthBar : MonoBehaviour {
 	void Start () {
 		maxHealth = PlayerController.getMaxHealth ();
 		healthBarImage = GetComponent<Image>();
-		GetComponent<RectTransform>().sizeDelta = new Vector2 (Screen.width, healthBarHeight);
-		
 	}
 	
 	// Update is called once per frame

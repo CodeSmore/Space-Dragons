@@ -26,12 +26,14 @@ public class ScoreKeeper : MonoBehaviour {
 	}
 	
 	void Update () {
-		Vector3 shipPos = ship.transform.position;
-		if (shipPos.x > scoreLeftEdge && shipPos.x < scoreRightEdge && shipPos.y < scoreTopEdge) {
-			myText.color = new Color (myText.color.r, myText.color.g, myText.color.b, 0.3f);
-		} else {
-			myText.color = new Color (myText.color.r, myText.color.g, myText.color.b, 1.0f);
-			
+		if (ship) {
+			Vector3 shipPos = ship.transform.position;
+			if (shipPos.x > scoreLeftEdge && shipPos.x < scoreRightEdge && shipPos.y < scoreTopEdge) {
+				myText.color = new Color (myText.color.r, myText.color.g, myText.color.b, 0.3f);
+			} else {
+				myText.color = new Color (myText.color.r, myText.color.g, myText.color.b, 1.0f);
+				
+			}
 		}
 	}
 	

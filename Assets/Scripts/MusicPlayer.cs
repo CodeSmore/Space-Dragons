@@ -65,9 +65,9 @@ public class MusicPlayer : MonoBehaviour {
 				
 				// Changes 
 				
-				if (level >= 4 && level <= 6) {
+				if (level == 4) {
 					music.clip = gameClip;
-				} else if (level >= 7) {
+				} else {
 					music.clip = endClip;
 				}
 				
