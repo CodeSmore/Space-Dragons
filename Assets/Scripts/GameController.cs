@@ -36,7 +36,7 @@ public class GameController : MonoBehaviour {
 			Instantiate (Formation2, new Vector3 (0, 20, 0), Quaternion.identity);
 			spawned2 = true;
 		} else if ((spawned4 && !f4) || DroneAssault == false) {
-			Level2Controller.StartCharge ();
+			ChargerAssaultController.StartCharge ();
 			Destroy (f4);
 		}
 	}

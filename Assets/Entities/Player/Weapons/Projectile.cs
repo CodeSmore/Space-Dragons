@@ -18,7 +18,9 @@ public class Projectile : MonoBehaviour {
 	
 	// Signals that the projectile has hit something and destroys the projectile.
 	public void Hit () {
-		Destroy (gameObject);
+		if (!GetComponent<LightningBolt>()) {
+			Destroy (gameObject);
+		}
 	}
 	
 	public void RotateProjectile () {

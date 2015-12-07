@@ -93,7 +93,9 @@ public class ChargerBehavior : MonoBehaviour {
 			this.GetComponent<SpriteRenderer>().sprite = hitSprite;
 			spriteTimer = 0;
 			
-			enemySounds.EnemyDamageSound ();
+			if (enemySounds /*exists*/) {
+				enemySounds.EnemyDamageSound ();
+			}
 		}
 		
 		

@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour {
 	private Camera camera;
 	
 	void Awake () {
-		gameController = GameObject.Find ("Game Controller");
+		gameController = GameObject.Find ("GameController");
 		menuIcon = GameObject.Find ("Pause Button");
 	}
 	void Start () {

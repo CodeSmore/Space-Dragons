@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Level2Controller : MonoBehaviour {
+public class ChargerAssaultController : MonoBehaviour {
 
 	public GameObject charger;
 	public float timer = 0;

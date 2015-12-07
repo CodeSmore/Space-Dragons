@@ -191,6 +191,18 @@ public class PlayerController : MonoBehaviour {
 		
 	}
 	
+	void OnTriggerStay (Collider collider) {
+		Projectile missile = collider.GetComponent<Projectile>();
+		
+		curHealth -= missile.GetDamage();
+		// Sprite changes to all white on impact
+		this.GetComponent<SpriteRenderer>().sprite = hitSprite;
+		timer = 0;
+		
+		// Plays damage sound effect
+		playerSounds.PlayerDamageSound ();
+	}
+	
 	// Called when a collider triggers the player.
 	// Controls what happens when the player is hit by a projectile.
 	void OnTriggerEnter2D (Collider2D collider) {
