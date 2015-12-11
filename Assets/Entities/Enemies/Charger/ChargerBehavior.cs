@@ -67,6 +67,7 @@ public class ChargerBehavior : MonoBehaviour {
 				}
 				// Rotates charger towards player ship position
 				Vector3 vectorToTarget = player.transform.position - transform.position;
+				vectorToTarget.Normalize ();
 				float angle = Mathf.Atan2(vectorToTarget.y, vectorToTarget.x) * Mathf.Rad2Deg;
 				Quaternion q = Quaternion.AngleAxis(angle + 90, Vector3.forward);				
 				transform.rotation = Quaternion.RotateTowards(transform.rotation, q, turnSpeed * Time.deltaTime);

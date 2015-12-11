@@ -163,8 +163,7 @@ public class EnemyBehavior : MonoBehaviour {
 	}
 	
 	void DropShit () {
-		GameObject shield = Instantiate (shieldDrop, transform.position, Quaternion.identity) as GameObject;
-		shield.GetComponent<Rigidbody2D>().velocity = new Vector2(0f, -dropSpeed);
+		Instantiate (shieldDrop, transform.position, Quaternion.identity);
 	}
 	
 	public static int getNumEnemiesDestroyed () {

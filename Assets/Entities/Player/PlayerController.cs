@@ -18,7 +18,8 @@ public class PlayerController : MonoBehaviour {
 	public Sprite hitSprite;
 	
 	// Speed of projectile and the rate it is fired if fire button is held.
-	public float projectileSpeed = 10, projectileRepeatRate = 0.2f;
+	public float projectileSpeed = 10;
+	private float projectileRepeatRate = 0.2f;
 	// Number of secondary weapons in reserve.
 	private static int numSecWeapon = 0;
 	public int bonusWeaponScore = 1000;
@@ -40,16 +41,16 @@ public class PlayerController : MonoBehaviour {
 	private GameObject myShield;
 	
 	// Timer for sprite changes
-	private float timer = 0;
+	private float spriteTimer = 0;
 	// Timer for shield
 	private float shieldTimer = 0;
-	
+	private float continuousDamageTimer = 0;
 	private float blastOffSpeed = 0;
 	
 	// Use this for initialization
 	void Start () {
-		// Reset 'timer'
-		timer = 0;
+		// Reset 'spriteTimer'
+		spriteTimer = 0;
 	
 		// Reset numSecWeapon, numSecWeaponsEarned, laserLevel, and health
 		numSecWeapon = 0;
@@ -72,7 +73,7 @@ public class PlayerController : MonoBehaviour {
 		// Initializes our SoundController by finding the one in the scene.
 		playerSounds = GameObject.FindObjectOfType<SoundController>();
 		
-		InvokeRepeating ("Fire", 0.0001f, projectileRepeatRate);
+		InvokeRepeating ("Fire", 0.000001f, projectileRepeatRate);
 	}
 	
 	// Update is called once per frame
@@ -107,10 +108,10 @@ public class PlayerController : MonoBehaviour {
 //		}
 		
 		// Return Sprite component of 'this' to normal sprite.
-		timer += Time.deltaTime;
+		spriteTimer += Time.deltaTime;
 		shieldTimer += Time.deltaTime;
 		
-		if (timer >= .1) {
+		if (spriteTimer >= .1) {
 			this.GetComponent<SpriteRenderer>().sprite = normSprite;
 		}
 		
@@ -130,33 +131,27 @@ public class PlayerController : MonoBehaviour {
 	// Controls all aspects of firing a projectile from the player.
 	// Instantiates the projectile, gives it velocity, and plays the sound effects.
 	void Fire () {
-		GameObject beam;
+		GameObject beam = null;
 		// Offset puts the projectile one world unit above the ship. 
 		// Extra: Unnecessary now, but was done to keep weapon from triggering ship.
 		Vector3 offset = new Vector3 (0, 1, 0);
 		// Projectile is Instantiated and set to 'beam' so it can be manipulated.
 		if (godMode == false) {
-			if (EnemyBehavior.getNumEnemiesDestroyed() < 15) {
-				laserLevel = 1;
+			if (laserLevel == 1) {
 				beam = Instantiate (weapon, transform.position + offset, Quaternion.identity) as GameObject;
-			} else if (EnemyBehavior.getNumEnemiesDestroyed() < 30){
-				laserLevel = 2;
+			} else if (laserLevel == 2){
 				beam = Instantiate (weapon2, transform.position + offset, Quaternion.identity) as GameObject;
-			} else if (EnemyBehavior.getNumEnemiesDestroyed () < 50){
-				laserLevel = 3;
+			} else if (laserLevel == 3){
 				beam = Instantiate (weapon3, new Vector3 (transform.position.x + 0.5f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
 				GameObject beam2 = Instantiate (weapon3, new Vector3 (transform.position.x - 0.5f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
 				beam2.GetComponent<Rigidbody2D>().velocity = new Vector3 (0, projectileSpeed, 0);
-			} else {
-				laserLevel = 4;
+			} else if (laserLevel == 4) {
 				beam = Instantiate (weapon4,transform.position + offset, Quaternion.identity) as GameObject;
 				GameObject beam2 = Instantiate (weapon4, new Vector3 (transform.position.x - 0.25f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
 				GameObject beam3 = Instantiate (weapon4, new Vector3 (transform.position.x + 0.25f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
 				
 				beam2.GetComponent<Rigidbody2D>().velocity = new Vector3 (projectileSpeed / 2, projectileSpeed / 2, 0);
 				beam3.GetComponent<Rigidbody2D>().velocity = new Vector3 (projectileSpeed / -2, projectileSpeed / 2, 0);
-				
-				
 			}
 		} else {
 			laserLevel = 3;
@@ -169,7 +164,19 @@ public class PlayerController : MonoBehaviour {
 		}
 		
 		// Velocity is set using the Rigidbody2D attached to the projectile.
-		beam.GetComponent<Rigidbody2D>().velocity = new Vector3 (0, projectileSpeed, 0);
+		if (beam != null) {
+			if (laserLevel == 1) {
+				beam.GetComponent<Rigidbody2D>().velocity = new Vector3 (0, projectileSpeed / 2, 0);
+				projectileRepeatRate = 0.5f;
+				CancelInvoke ("Fire");
+			} else {
+				beam.GetComponent<Rigidbody2D>().velocity = new Vector3 (0, projectileSpeed, 0);
+				projectileRepeatRate = 0.2f;
+				CancelInvoke ("Fire");
+			}
+			
+			InvokeRepeating ("Fire", projectileRepeatRate, projectileRepeatRate);
+		}
 		// Plays the weapon sound!
 		playerSounds.PlayerFireSound();
 	}
@@ -191,16 +198,31 @@ public class PlayerController : MonoBehaviour {
 		
 	}
 	
-	void OnTriggerStay (Collider collider) {
-		Projectile missile = collider.GetComponent<Projectile>();
+	// Continuous Damage from a persistent attack (shocker attack, laser, ect)
+	void OnTriggerStay2D (Collider2D collider) {
 		
-		curHealth -= missile.GetDamage();
-		// Sprite changes to all white on impact
-		this.GetComponent<SpriteRenderer>().sprite = hitSprite;
-		timer = 0;
 		
-		// Plays damage sound effect
-		playerSounds.PlayerDamageSound ();
+		
+		if (collider.gameObject.tag == "Enemy Projectiles") {
+			continuousDamageTimer += Time.deltaTime; 
+			
+			Projectile missile = collider.GetComponent<Projectile>();
+			
+			curHealth -= missile.GetDamage();
+			
+			// Sprite changes to all white on impact
+			this.GetComponent<SpriteRenderer>().sprite = hitSprite;
+			spriteTimer = 0;
+			
+			// Plays damage sound effect
+			playerSounds.PlayerShockSound ();
+		}
+		
+		// Once health reaches zero or below, the player object is destroyed
+		// and the 'Win Screen' scene is loaded.
+		if (curHealth <= 0) {
+			Die ();
+		}
 	}
 	
 	// Called when a collider triggers the player.
@@ -214,8 +236,12 @@ public class PlayerController : MonoBehaviour {
 		// If we are correct and it is a weapon, then we take damage
 		// and destroy the weapon.
 		if (collisionObject.tag == "PowerUp") {
-			Debug.Log ("Shields On!!!");
-			SpawnShield ();
+			if (collisionObject.name == "Shield Drop") {
+				SpawnShield ();
+			} else if (collisionObject.name == "Laser PowerUp") {
+				laserLevel = Mathf.Clamp (++laserLevel, 1, 4);
+			}
+			
 			Destroy (collisionObject);
 		} else if (collisionObject.tag == "Enemy") {
 			Destroy (collisionObject);
@@ -233,7 +259,7 @@ public class PlayerController : MonoBehaviour {
 			curHealth -= missile.GetDamage();
 			// Sprite changes to all white on impact
 			this.GetComponent<SpriteRenderer>().sprite = hitSprite;
-			timer = 0;
+			spriteTimer = 0;
 			
 			// Plays damage sound effect
 			playerSounds.PlayerDamageSound ();

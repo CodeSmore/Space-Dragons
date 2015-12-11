@@ -18,7 +18,7 @@ public class PlayerMovement : MonoBehaviour {
 	private static bool playMode = true;
 	private GameObject menuIcon;
 	private GameObject gameController;
-	private Camera camera;
+	private Camera mainCamera;
 	
 	void Awake () {
 		gameController = GameObject.Find ("GameController");
@@ -27,12 +27,12 @@ public class PlayerMovement : MonoBehaviour {
 	void Start () {
 		// A local camera holds the values for the game camera so that boundaries for ship movement 
 		// can be determined. We don't want the ship to leave the view of the player.
-		camera = Camera.main;
-		float distance = transform.position.z - camera.transform.position.z;
-		xMin = camera.ViewportToWorldPoint (new Vector3(0, 0, distance)).x + padding;
-		xMax = camera.ViewportToWorldPoint (new Vector3(1, 1, distance)).x - padding;
-		yMin = camera.ViewportToWorldPoint (new Vector3(0, 0, distance)).y + padding;
-		yMax = camera.ViewportToWorldPoint (new Vector3(1, 1f, distance)).y - padding;
+		mainCamera = Camera.main;
+		float distance = transform.position.z - mainCamera.transform.position.z;
+		xMin = mainCamera.ViewportToWorldPoint (new Vector3(0, 0, distance)).x + padding;
+		xMax = mainCamera.ViewportToWorldPoint (new Vector3(1, 1, distance)).x - padding;
+		yMin = mainCamera.ViewportToWorldPoint (new Vector3(0, 0, distance)).y + padding;
+		yMax = mainCamera.ViewportToWorldPoint (new Vector3(1, 1f, distance)).y - padding;
 	}
 	
 	void Update () {
@@ -95,7 +95,7 @@ public class PlayerMovement : MonoBehaviour {
 		}
 	}
 	private void MoveWithFinger () {
-		Vector2 mousePos = camera.ScreenToWorldPoint (Input.mousePosition);	
+		Vector2 mousePos = mainCamera.ScreenToWorldPoint (Input.mousePosition);	
 
 		float speedAdjustment = 1;
 		

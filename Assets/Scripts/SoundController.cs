@@ -10,6 +10,7 @@ public class SoundController : MonoBehaviour {
 	public AudioClip laserangFire;
 	public AudioClip enemyDamage;
 	public AudioClip playerDamage;
+	public AudioClip playerShocked;
 	
 	private AudioSource audioSource;
 
@@ -25,6 +26,12 @@ public class SoundController : MonoBehaviour {
 	
 	public void EnemyFireSound () {
 		AudioSource.PlayClipAtPoint (enemyFire, transform.position);
+		
+		ChangeAudioSourcesTo2D ();
+	}
+	
+	public void PlayerShockSound () {
+		AudioSource.PlayClipAtPoint (playerShocked, transform.position, 0.3f);
 		
 		ChangeAudioSourcesTo2D ();
 	}
