@@ -5,6 +5,10 @@ public class Shredder : MonoBehaviour {
 
 	void OnTriggerExit2D (Collider2D col) {
 		Destroy(col.transform.gameObject);
-		Destroy (col.transform.root.gameObject);
+		
+		if (col.transform.parent.tag != "DoNotDestroy") {
+			Destroy (col.transform.parent.gameObject);
+		}
+		
 	}
 }

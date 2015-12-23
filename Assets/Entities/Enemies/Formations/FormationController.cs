@@ -41,7 +41,7 @@ public class FormationController : MonoBehaviour {
 		
 		// Initializes a Camera type object so that it's position and ViewportToWorldPoint values
 		// can be used to move the formation within the visible gamespace.
-		Camera camera = Camera.main;
+		Camera camera = GameObject.Find ("Foreground Camera").GetComponent<Camera>();
 		
 		// Initializes 'distance' to hold the z distrance between the camera and formation.
 		float distance = transform.position.z - camera.transform.position.z;
@@ -79,13 +79,10 @@ public class FormationController : MonoBehaviour {
 		// Initializes the boundaries of the formation as x positions.
 		formationLeftEdge = 50;
 		formationRightEdge = 0;
-		int numChildren = 0;
 		
 		foreach (Transform position in transform) {
 			foreach (Transform child in position.transform) {
 				if (child.childCount > 0) {
-					
-					numChildren ++;
 					
 					if (formationRightEdge < child.position.x) {
 						formationRightEdge = child.position.x;
@@ -96,10 +93,6 @@ public class FormationController : MonoBehaviour {
 				}	
 			}
 		}
-				
-		if (numChildren == 0) {
-			Destroy(gameObject);
-		} 
 	}
 	
 	// Method used to draw gizmos in the Scene view.

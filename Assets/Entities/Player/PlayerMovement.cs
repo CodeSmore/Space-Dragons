@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour {
 	// X position values that mark the booundaries
 	// the player ship can move.
 	private float xMin, xMax, yMin, yMax;
+	private SpriteRenderer shipRenderer;
 	
 	// Offset of finger to ship, allows player to see the ship b/c it's not under finger.
 	private Vector2 shipOffset = new Vector2 (0f, 2.0f);
@@ -18,7 +19,9 @@ public class PlayerMovement : MonoBehaviour {
 	private static bool playMode = true;
 	private GameObject menuIcon;
 	private GameObject gameController;
-	private Camera mainCamera;
+	public Camera mainCamera;
+	
+	private static bool movementEnabled = false;
 	
 	void Awake () {
 		gameController = GameObject.Find ("GameController");
@@ -27,12 +30,13 @@ public class PlayerMovement : MonoBehaviour {
 	void Start () {
 		// A local camera holds the values for the game camera so that boundaries for ship movement 
 		// can be determined. We don't want the ship to leave the view of the player.
-		mainCamera = Camera.main;
 		float distance = transform.position.z - mainCamera.transform.position.z;
 		xMin = mainCamera.ViewportToWorldPoint (new Vector3(0, 0, distance)).x + padding;
 		xMax = mainCamera.ViewportToWorldPoint (new Vector3(1, 1, distance)).x - padding;
 		yMin = mainCamera.ViewportToWorldPoint (new Vector3(0, 0, distance)).y + padding;
 		yMax = mainCamera.ViewportToWorldPoint (new Vector3(1, 1f, distance)).y - padding;
+		
+		shipRenderer = GetComponent<SpriteRenderer>();
 	}
 	
 	void Update () {
@@ -67,36 +71,46 @@ public class PlayerMovement : MonoBehaviour {
 	}
 	
 	private void ManipulateGameSpeedAndPauseButton () {
-		if (GameObject.Find ("Pause Menu")) {
-			Time.timeScale = 0;
-		} else if ((Input.touchCount > 0 || Input.GetButton ("Fire1")) && playMode) {
-			menuIcon.SetActive (false);
-			timer = 0;
-			Time.timeScale = 1;
-			
-			// Fade In
-			gameController.GetComponent<FadeTextureController>().BeginFade (-1);
-			
-			// Move
-			MoveWithFinger ();
-		} else {
-			menuIcon.SetActive (true);
-			timer += Time.deltaTime * 2;
-			
-			if (timer > .9f) 
-				timer = .9f;
-			
-			Time.timeScale = 1 - timer;
-			
-			playMode = false;
-			
-			// Fade Out
-			gameController.GetComponent<FadeTextureController>().BeginFade (1);
+		if (movementEnabled) {
+			if (GameObject.Find ("Pause Menu")) {
+				Time.timeScale = 0;
+		
+				if (!playMode) {
+					shipRenderer.color = new Color (shipRenderer.color.r, shipRenderer.color.g, shipRenderer.color.b, 50);
+				}
+			} else if ((Input.touchCount > 0 || Input.GetButton ("Fire1")) && playMode) {
+				menuIcon.SetActive (false);
+				timer = 0;
+				Time.timeScale = 1;
+				
+				// Fade In
+				gameController.GetComponent<FadeTextureController>().BeginFade (-1);
+				shipRenderer.color = new Color (shipRenderer.color.r, shipRenderer.color.g, shipRenderer.color.b, 255);
+				
+				// Move
+				MoveWithFinger ();
+			} else {
+				menuIcon.SetActive (true);
+				timer += Time.deltaTime * 2;
+				
+				if (timer > .9f) 
+					timer = .9f;
+				
+				Time.timeScale = 1 - timer;
+				
+				playMode = false;
+				
+				shipRenderer.color = new Color (shipRenderer.color.r, shipRenderer.color.g, shipRenderer.color.b, 255);
+				
+				// Fade Out
+				gameController.GetComponent<FadeTextureController>().BeginFade (1);
+			}
 		}
 	}
+	
 	private void MoveWithFinger () {
 		Vector2 mousePos = mainCamera.ScreenToWorldPoint (Input.mousePosition);	
-
+		
 		float speedAdjustment = 1;
 		
 		// Snapping Effect for x and y
@@ -111,15 +125,15 @@ public class PlayerMovement : MonoBehaviour {
 		
 		// Standard Lerp for smooth movement
 		Vector3 shipPos = Vector3.Lerp (
-										gameObject.transform.position, 
-										new Vector3 (
-											Mathf.Clamp (mousePos.x + shipOffset.x, xMin, xMax), 
-									  	    Mathf.Clamp (mousePos.y + shipOffset.y, yMin, yMax), 
-									   		transform.position.z
-									   	),
-									   	Time.deltaTime * speed * speedAdjustment
-						  );
-									   
+			gameObject.transform.position, 
+			new Vector3 (
+			Mathf.Clamp (mousePos.x + shipOffset.x, xMin, xMax), 
+			Mathf.Clamp (mousePos.y + shipOffset.y, yMin, yMax), 
+			transform.position.z
+			),
+			Time.deltaTime * speed * speedAdjustment
+			);
+		
 		transform.position = shipPos;
 	}
 	
@@ -129,5 +143,9 @@ public class PlayerMovement : MonoBehaviour {
 		} else {
 			playMode = false;
 		}
+	}
+	
+	public static void SetMovementEnabled (bool enabled) {
+		movementEnabled = enabled;
 	}
 }	

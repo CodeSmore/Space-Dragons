@@ -27,6 +27,8 @@ public class PlayerController : MonoBehaviour {
 	private static int laserLevel = 1;
 	public float shieldPadding;
 	
+	private bool weaponsEnabled = false;
+	
 	// PLAYER MANIPULATION
 	// Player health
 	public static float curHealth;
@@ -131,21 +133,31 @@ public class PlayerController : MonoBehaviour {
 	// Controls all aspects of firing a projectile from the player.
 	// Instantiates the projectile, gives it velocity, and plays the sound effects.
 	void Fire () {
-		GameObject beam = null;
-		// Offset puts the projectile one world unit above the ship. 
-		// Extra: Unnecessary now, but was done to keep weapon from triggering ship.
-		Vector3 offset = new Vector3 (0, 1, 0);
-		// Projectile is Instantiated and set to 'beam' so it can be manipulated.
-		if (godMode == false) {
-			if (laserLevel == 1) {
-				beam = Instantiate (weapon, transform.position + offset, Quaternion.identity) as GameObject;
-			} else if (laserLevel == 2){
-				beam = Instantiate (weapon2, transform.position + offset, Quaternion.identity) as GameObject;
-			} else if (laserLevel == 3){
-				beam = Instantiate (weapon3, new Vector3 (transform.position.x + 0.5f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
-				GameObject beam2 = Instantiate (weapon3, new Vector3 (transform.position.x - 0.5f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
-				beam2.GetComponent<Rigidbody2D>().velocity = new Vector3 (0, projectileSpeed, 0);
-			} else if (laserLevel == 4) {
+		if (weaponsEnabled) {
+			GameObject beam = null;
+			// Offset puts the projectile one world unit above the ship. 
+			// Extra: Unnecessary now, but was done to keep weapon from triggering ship.
+			Vector3 offset = new Vector3 (0, 1, 0);
+			// Projectile is Instantiated and set to 'beam' so it can be manipulated.
+			if (godMode == false) {
+				if (laserLevel == 1) {
+					beam = Instantiate (weapon, transform.position + offset, Quaternion.identity) as GameObject;
+				} else if (laserLevel == 2){
+					beam = Instantiate (weapon2, transform.position + offset, Quaternion.identity) as GameObject;
+				} else if (laserLevel == 3){
+					beam = Instantiate (weapon3, new Vector3 (transform.position.x + 0.5f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
+					GameObject beam2 = Instantiate (weapon3, new Vector3 (transform.position.x - 0.5f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
+					beam2.GetComponent<Rigidbody2D>().velocity = new Vector3 (0, projectileSpeed, 0);
+				} else if (laserLevel == 4) {
+					beam = Instantiate (weapon4,transform.position + offset, Quaternion.identity) as GameObject;
+					GameObject beam2 = Instantiate (weapon4, new Vector3 (transform.position.x - 0.25f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
+					GameObject beam3 = Instantiate (weapon4, new Vector3 (transform.position.x + 0.25f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
+					
+					beam2.GetComponent<Rigidbody2D>().velocity = new Vector3 (projectileSpeed / 2, projectileSpeed / 2, 0);
+					beam3.GetComponent<Rigidbody2D>().velocity = new Vector3 (projectileSpeed / -2, projectileSpeed / 2, 0);
+				}
+			} else {
+				laserLevel = 3;
 				beam = Instantiate (weapon4,transform.position + offset, Quaternion.identity) as GameObject;
 				GameObject beam2 = Instantiate (weapon4, new Vector3 (transform.position.x - 0.25f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
 				GameObject beam3 = Instantiate (weapon4, new Vector3 (transform.position.x + 0.25f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
@@ -153,32 +165,24 @@ public class PlayerController : MonoBehaviour {
 				beam2.GetComponent<Rigidbody2D>().velocity = new Vector3 (projectileSpeed / 2, projectileSpeed / 2, 0);
 				beam3.GetComponent<Rigidbody2D>().velocity = new Vector3 (projectileSpeed / -2, projectileSpeed / 2, 0);
 			}
-		} else {
-			laserLevel = 3;
-			beam = Instantiate (weapon4,transform.position + offset, Quaternion.identity) as GameObject;
-			GameObject beam2 = Instantiate (weapon4, new Vector3 (transform.position.x - 0.25f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
-			GameObject beam3 = Instantiate (weapon4, new Vector3 (transform.position.x + 0.25f, transform.position.y + 1, 0), Quaternion.identity) as GameObject;
 			
-			beam2.GetComponent<Rigidbody2D>().velocity = new Vector3 (projectileSpeed / 2, projectileSpeed / 2, 0);
-			beam3.GetComponent<Rigidbody2D>().velocity = new Vector3 (projectileSpeed / -2, projectileSpeed / 2, 0);
-		}
-		
-		// Velocity is set using the Rigidbody2D attached to the projectile.
-		if (beam != null) {
-			if (laserLevel == 1) {
-				beam.GetComponent<Rigidbody2D>().velocity = new Vector3 (0, projectileSpeed / 2, 0);
-				projectileRepeatRate = 0.5f;
-				CancelInvoke ("Fire");
-			} else {
-				beam.GetComponent<Rigidbody2D>().velocity = new Vector3 (0, projectileSpeed, 0);
-				projectileRepeatRate = 0.2f;
-				CancelInvoke ("Fire");
+			// Velocity is set using the Rigidbody2D attached to the projectile.
+			if (beam != null) {
+				if (laserLevel == 1) {
+					beam.GetComponent<Rigidbody2D>().velocity = new Vector3 (0, projectileSpeed / 2, 0);
+					projectileRepeatRate = 0.5f;
+					CancelInvoke ("Fire");
+				} else {
+					beam.GetComponent<Rigidbody2D>().velocity = new Vector3 (0, projectileSpeed, 0);
+					projectileRepeatRate = 0.2f;
+					CancelInvoke ("Fire");
+				}
+				
+				InvokeRepeating ("Fire", projectileRepeatRate, projectileRepeatRate);
 			}
-			
-			InvokeRepeating ("Fire", projectileRepeatRate, projectileRepeatRate);
+			// Plays the weapon sound!
+			playerSounds.PlayerFireSound();
 		}
-		// Plays the weapon sound!
-		playerSounds.PlayerFireSound();
 	}
 	
 	void SecondaryFire () {
@@ -247,7 +251,9 @@ public class PlayerController : MonoBehaviour {
 			Destroy (collisionObject);
 			if (myShield) {
 				Destroy (myShield);
-			} else {
+			} else if (GameObject.Find ("boxing-glove")) {
+				// nothing happens
+			}else {
 				curHealth -= 100;
 				
 				// Plays damage sound effect
@@ -330,5 +336,15 @@ public class PlayerController : MonoBehaviour {
 	
 	public static float getMaxHealth () {
 		return maxHealth;
+	}
+	
+	public void SetWeaponsEnabled (bool enabled) {
+		weaponsEnabled = enabled;
+	}
+	
+	public void DestroyChildren () {
+		foreach (Transform child in transform) {
+			Destroy (child.gameObject);
+		}
 	}
 }

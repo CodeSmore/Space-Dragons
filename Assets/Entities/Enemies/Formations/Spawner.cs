@@ -18,6 +18,7 @@ public class Spawner : MonoBehaviour {
 			GameObject enemy = Instantiate(enemyPrefab, child.transform.position, Quaternion.identity) as GameObject;
 			// Then set the enemy parent to the Transform called 'child'...
 			enemy.transform.parent = child;
+			enemy.transform.position = Vector3.zero;
 		} 
 	}
 }

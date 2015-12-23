@@ -7,15 +7,12 @@ public class LightningBehavior : MonoBehaviour {
 	
 	public float secondsBetweenBoltSpawns;
 	public int maxNumBolts;
-	private float interval;
 	
 	private float spawnRotZLeft = -31f;
 	private float spawnRotZRight = 391f;
 	
 	private Vector3 previousTailPos;
 	private Vector3 initialPos;
-	
-	private Vector3 lastBoltPosition = new Vector3(-.124f, -0.443f, 0);
 	
 	private Vector3 spawnPosition = new Vector3 ();
 	private Quaternion spawnRotation = Quaternion.identity;
@@ -24,8 +21,6 @@ public class LightningBehavior : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		interval = secondsBetweenBoltSpawns;
-	
 		spawnRotation =	transform.rotation;
 		initialPos = transform.position;
 		GameObject newBolt = Instantiate (bolt, initialPos, spawnRotation) as GameObject;
