@@ -17,6 +17,7 @@ public class Scroller : MonoBehaviour {
 	
 	private bool isScrolling = false;
 	private Vector3 startPosition;
+	private bool detachmentHasOccured = false;
 	public float timeSinceIsActive = 0;
 	
 	void Start ()
@@ -66,9 +67,12 @@ public class Scroller : MonoBehaviour {
 			}
 		}
 		
-		if (transform.position.y <= -540) {
+		if (transform.position.y <= -540 && !detachmentHasOccured) {
 			speedScale = spaceScrollScale;
-			playerAnim.SetTrigger ("DetachmentTrigger");
+			if (playerAnim) {
+				playerAnim.SetTrigger ("DetachmentTrigger");
+				detachmentHasOccured = true;
+			}
 		}
 	}
 	

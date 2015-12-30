@@ -18,13 +18,13 @@ public class PlayerMovement : MonoBehaviour {
 	private float timer = 0;
 	private static bool playMode = true;
 	private GameObject menuIcon;
-	private GameObject gameController;
+	private GameObject fadeController;
 	public Camera mainCamera;
 	
-	private static bool movementEnabled = false;
+	private bool movementEnabled = false;
 	
 	void Awake () {
-		gameController = GameObject.Find ("GameController");
+		fadeController = GameObject.Find ("FadeTextureController");
 		menuIcon = GameObject.Find ("Pause Button");
 	}
 	void Start () {
@@ -84,7 +84,7 @@ public class PlayerMovement : MonoBehaviour {
 				Time.timeScale = 1;
 				
 				// Fade In
-				gameController.GetComponent<FadeTextureController>().BeginFade (-1);
+				fadeController.GetComponent<FadeTextureController>().BeginFade (-1);
 				shipRenderer.color = new Color (shipRenderer.color.r, shipRenderer.color.g, shipRenderer.color.b, 255);
 				
 				// Move
@@ -103,7 +103,7 @@ public class PlayerMovement : MonoBehaviour {
 				shipRenderer.color = new Color (shipRenderer.color.r, shipRenderer.color.g, shipRenderer.color.b, 255);
 				
 				// Fade Out
-				gameController.GetComponent<FadeTextureController>().BeginFade (1);
+				fadeController.GetComponent<FadeTextureController>().BeginFade (1);
 			}
 		}
 	}
@@ -145,7 +145,7 @@ public class PlayerMovement : MonoBehaviour {
 		}
 	}
 	
-	public static void SetMovementEnabled (bool enabled) {
-		movementEnabled = enabled;
+	public void SetMovementEnabled () {
+		movementEnabled = true;
 	}
 }	

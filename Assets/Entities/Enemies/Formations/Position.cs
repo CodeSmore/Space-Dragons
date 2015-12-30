@@ -3,6 +3,9 @@ using System.Collections;
 
 public class Position : MonoBehaviour {
 
+	public GameObject enemyPrefab;
+	private bool hasOwnEnemyPrefab = false;
+
 	private float boundaryLeftEdge;
 	private float boundaryRightEdge;
 	
@@ -17,6 +20,13 @@ public class Position : MonoBehaviour {
 	// Draws a wire sphere w/ a radius of 1 over each position in the formation.
 	void OnDrawGizmos () {
 		Gizmos.DrawWireSphere (transform.position, 1);
+	}
+	
+	// Added Awake() b/c GetHasOwnEnemyPrefab () is being called in another scripts Start ()
+	void Awake () {
+		if (enemyPrefab != null) {
+			hasOwnEnemyPrefab = true;
+		}
 	}
 	
 	void Start () {
@@ -43,5 +53,13 @@ public class Position : MonoBehaviour {
 				0
 			);
 		}
+	}
+	
+	public Object InstantiateEnemyPrefab () {
+		return Instantiate(enemyPrefab, transform.position, Quaternion.identity);
+	}
+	
+	public bool GetHasOwnEnemyPrefab () {
+		return hasOwnEnemyPrefab;
 	}
 }

@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour {
 	// PLAYER MANIPULATION
 	// Player health
 	public static float curHealth;
-	public static float maxHealth;
+	public float maxHealth = 1000;
 	
 	// God mode enabled or not.
 	public static bool godMode = false;
@@ -59,7 +59,6 @@ public class PlayerController : MonoBehaviour {
 		numSecWeaponsEarned = 0;
 		laserLevel = 1;
 		
-		maxHealth = 1000;
 		curHealth = maxHealth;
 		
 		// if godmode is enabled, give the player essentially infinite health.
@@ -87,13 +86,6 @@ public class PlayerController : MonoBehaviour {
 			numSecWeaponsEarned++;
 			numSecWeapon++;
 		}
-		
-		// Shoot labias!
-		// If the player holds down the Fire1 button, projectiles are continuously fired
-		// at projectileRepeatRate rate.
-		// Extra: First is method name, then time before it is called, then time between calls.
-		// .0001f is used instead of zero due to potential issues, though zero seems to work fine.
-
 //		if (CrossPlatformInputManager.GetButtonDown ("Fire1")) {
 //			
 //		}
@@ -204,10 +196,7 @@ public class PlayerController : MonoBehaviour {
 	
 	// Continuous Damage from a persistent attack (shocker attack, laser, ect)
 	void OnTriggerStay2D (Collider2D collider) {
-		
-		
-		
-		if (collider.gameObject.tag == "Enemy Projectiles") {
+		if (collider.gameObject.tag == "Lightning") {
 			continuousDamageTimer += Time.deltaTime; 
 			
 			Projectile missile = collider.GetComponent<Projectile>();
@@ -260,7 +249,7 @@ public class PlayerController : MonoBehaviour {
 				playerSounds.PlayerDamageSound ();
 			}
 			
-		} else if (!myShield && missile && missile.tag != "PlayerLaser") {
+		} else if (!myShield && missile && missile.tag != "PlayerLaser" && !GameObject.Find ("boxing-glove")) {
 			missile.Hit ();
 			curHealth -= missile.GetDamage();
 			// Sprite changes to all white on impact
@@ -283,7 +272,8 @@ public class PlayerController : MonoBehaviour {
 		shieldTimer = 0;
 		if (!myShield) {
 			myShield = Instantiate (shield, new Vector3 (transform.position.x, transform.position.y + shieldPadding, 0), Quaternion.identity) as GameObject;
-			myShield.transform.parent = transform;
+			myShield.transform.SetParent (transform);
+			myShield.transform.localScale = Vector3.one;
 		}
 	}
 	
@@ -334,17 +324,25 @@ public class PlayerController : MonoBehaviour {
 		return curHealth;
 	}
 	
-	public static float getMaxHealth () {
+	public float getMaxHealth () {
 		return maxHealth;
 	}
 	
-	public void SetWeaponsEnabled (bool enabled) {
-		weaponsEnabled = enabled;
+	// Added b/c method that takes a bool will not appear in animation editor
+	// TODO: Make a single method for animation and script to manipulate weaponsEnabled.
+	public void EnableWeapons () {
+		weaponsEnabled = true;
+		
+		if (GameObject.FindObjectOfType<EnablerOfEnemies>()) {
+			GameObject.FindObjectOfType<EnablerOfEnemies>().gameTime = true;
+		}
 	}
 	
 	public void DestroyChildren () {
 		foreach (Transform child in transform) {
+			Debug.Log (child.gameObject + " was destroyed by DestroyChildren ()");
 			Destroy (child.gameObject);
+			
 		}
 	}
 }

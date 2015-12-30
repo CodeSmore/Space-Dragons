@@ -28,6 +28,9 @@ public class BossFormationController : MonoBehaviour {
 	private PlayerController player;
 	private float endTimer = 0;
 	
+	private float spawnTimer = 0;
+	public float spawnSpeed = 1;
+	
 	// Use this for initialization
 	void Start () {
 		bossInstance = gameObject.transform.GetChild (0).gameObject;
@@ -35,15 +38,15 @@ public class BossFormationController : MonoBehaviour {
 		
 		// Initializes a Camera type object so that it's position and ViewportToWorldPoint values
 		// can be used to move the formation within the visible gamespace.
-		Camera camera = Camera.main;
+		Camera foregroundCamera = GameObject.Find ("Foreground Camera").GetComponent<Camera>();
 		
 		// Initializes 'distance' to hold the z distrance between the camera and formation.
-		float distance = transform.position.z - camera.transform.position.z;
+		float distance = transform.position.z - foregroundCamera.transform.position.z;
 		
 		// Defines the boundaries for the visible gamespace, therefore setting the boundaries
 		// for where we want the formation to move.
-		boundaryLeftEdge = camera.ViewportToWorldPoint (new Vector3(0, 0, distance)).x + padding;
-		boundaryRightEdge = camera.ViewportToWorldPoint (new Vector3(1, 1, distance)).x - padding;
+		boundaryLeftEdge = foregroundCamera.ViewportToWorldPoint (new Vector3(0, 0, distance)).x + padding;
+		boundaryRightEdge = foregroundCamera.ViewportToWorldPoint (new Vector3(1, 1, distance)).x - padding;
 	
 		// Calls the 'SpawnEnemies ()' local method.
 		SpawnEnemies ();
@@ -51,17 +54,30 @@ public class BossFormationController : MonoBehaviour {
 	
 	void Update () {
 	
+		spawnTimer += Time.deltaTime;
+		
 		// Initializes the boundaries of the formation as x positions.
 		float formationRightEdge = transform.position.x + 0.5f * width;
 		float formationLeftEdge = transform.position.x - 0.5f * width;
 		
-		// Causes a change in direction of the formation once 
-		// the formation's boundary crosses visible gamespace's boundary.
-		if 		 (formationRightEdge > boundaryRightEdge) {
-			direction = -1; 
-		}else if (formationLeftEdge < boundaryLeftEdge) {
-			direction = 1; 
+		if (spawnTimer < 8) {
+			direction = 0;
+			transform.position -= new Vector3 (0f, spawnSpeed * Time.deltaTime, 0f);
+		} else {
+			// Causes a change in direction of the formation once 
+			// the formation's boundary crosses visible gamespace's boundary.
+			if 		 (formationRightEdge > boundaryRightEdge) {
+				direction = -1; 
+			} else if (formationLeftEdge < boundaryLeftEdge || direction == 0) {
+				direction = 1; 
+			} 
 		}
+		
+		
+		
+		
+		
+		
 		
 		// This single statement determines the movement of the formation in the x direction.
 		// Extra: Movement is based on last know position + conversion from /frame to /second * direction (+1 or -1) * speed.
@@ -72,11 +88,9 @@ public class BossFormationController : MonoBehaviour {
 		SpawnUntilFull();
 		
 		// If boss is dead, destroy formation
-		if (bossInstance.transform.childCount == 0) {
+		if (!bossInstance) {
 			endTimer += Time.deltaTime;
-			
-			Debug.Log ("EndTimer" + endTimer);
-			
+						
 			foreach (Transform child in transform) {
 				if (child.childCount > 0) {
 					Destroy (child.transform.GetChild (0).gameObject);
@@ -191,17 +205,17 @@ public class BossFormationController : MonoBehaviour {
 	// Spawns all the enemies at once instead of one at a time like the SpawnUntilFull() method.
 	void SpawnEnemies () {
 		// Foreach child that exists in the formation...
-		foreach (Transform child in transform) {
-			if (child.tag == "Boss") {
-				GameObject boss = Instantiate(bossPrefab, child.transform.position, Quaternion.identity) as GameObject;
-				boss.transform.parent = child;
-			} else {
-				// Spawn an enemy as the position's child...
-				GameObject enemy = Instantiate(enemyPrefab, child.transform.position, Quaternion.identity) as GameObject;
-				// Then set the enemy parent to the Transform called 'child'...
-				enemy.transform.parent = child;
-			}
-			
-		} 
+//		foreach (Transform child in transform) {
+//			if (child.tag == "Boss") {
+//				GameObject boss = Instantiate(bossPrefab, child.transform.position, Quaternion.identity) as GameObject;
+//				boss.transform.parent = child;
+//			} else {
+//				// Spawn an enemy as the position's child...
+//				GameObject enemy = Instantiate(enemyPrefab, child.transform.position, Quaternion.identity) as GameObject;
+//				// Then set the enemy parent to the Transform called 'child'...
+//				enemy.transform.parent = child;
+//			}
+//			
+//		} 
 	}
 }

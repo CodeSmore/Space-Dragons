@@ -24,6 +24,9 @@ public class EnemyBehavior : MonoBehaviour {
 	public float dropRate = 0.05f;
 	public float dropSpeed = 2;
 	
+	// Rate of fire, lower number makes it go faster!
+	public float projectileRepeatRate = 2;
+	
 	// ScoreKeeper and SoundController objects brought in to utilize their methods.
 	private ScoreKeeper scoreKeeper;
 	private SoundController enemySounds; 
@@ -38,18 +41,15 @@ public class EnemyBehavior : MonoBehaviour {
 		// when there is only one instance of the script.
 		scoreKeeper = GameObject.Find("Score").GetComponent<ScoreKeeper>();
 		enemySounds = FindObjectOfType<SoundController>();
+		
+		
+		InvokeRepeating ("Fire", 0.000001f, projectileRepeatRate);
 	}
 	
 	void Update () {	
 		// probability is ACTUALLY shots/second, but needs to be calculated in update due
 		// to the variable nature of framerate.
 		float probability = Time.deltaTime * shotsPerSecond;
-		
-		// Random.value is always inclusively between 0.0 and 1.0. This makes it a probability of
-		// shooting, making the shooting patterns of enemies less predictable.
-		if (Random.value < probability) {
-			Fire ();
-		}
 		
 		timer += Time.deltaTime;
 		
@@ -62,7 +62,7 @@ public class EnemyBehavior : MonoBehaviour {
 	void Fire () {
 		// Instantiates a 'projectile' GameObject, slightly below the enemy...
 		if (this.name != "Tank(Clone)") {
-			GameObject missile;
+			GameObject missile = null;
 			float xAxisSpeed = 0; 
 			float yAxisSpeed = projectileSpeed;
 			
@@ -108,9 +108,11 @@ public class EnemyBehavior : MonoBehaviour {
 				
 			}
 			// Then sets the velocity using it's Rigidbody2D component...
-			missile.GetComponent<Rigidbody2D>().velocity = new Vector2(xAxisSpeed, -yAxisSpeed);
-			// And finally, utilizes our SoundController to play the sound effect.
-			enemySounds.EnemyFireSound ();
+			if (missile != null) {
+				missile.GetComponent<Rigidbody2D>().velocity = new Vector2(xAxisSpeed, -yAxisSpeed);
+				// And finally, utilizes our SoundController to play the sound effect.
+				enemySounds.EnemyFireSound ();
+			}
 		}
 	}
 	
@@ -150,8 +152,6 @@ public class EnemyBehavior : MonoBehaviour {
 		float probability = dropRate;
 		float random = Random.value;
 		
-		Debug.Log ("probability: " + probability);
-		Debug.Log ("random: " + random);
 		if (numEnemiesDestroyed >= 6 && random <= probability) {
 			DropShit ();
 		}

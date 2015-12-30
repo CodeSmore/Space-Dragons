@@ -14,7 +14,7 @@ public class HealthBar : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		maxHealth = PlayerController.getMaxHealth ();
+		maxHealth = GameObject.FindGameObjectWithTag ("Player").GetComponent<PlayerController>().getMaxHealth ();
 		healthBarImage = GetComponent<Image>();
 	}
 	

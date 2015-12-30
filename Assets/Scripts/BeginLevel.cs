@@ -4,6 +4,8 @@ using System.Collections;
 public class BeginLevel : MonoBehaviour {
 	
 	private GameObject enemies;
+	private GameObject gameController;
+	
 	private Scroller background;
 	private bool timerStarted = false;
 	
@@ -11,9 +13,12 @@ public class BeginLevel : MonoBehaviour {
 	
 	public float endChargeTime = 50;
 	
-	void Start () {
+	void Awake () {
 		enemies = GameObject.Find ("Enemies");
 		enemies.SetActive (false);
+		gameController = GameObject.FindGameObjectWithTag ("GameController");
+		gameController.SetActive (false);
+		
 		
 		background = FindObjectOfType<Scroller>();
 	}
@@ -22,12 +27,12 @@ public class BeginLevel : MonoBehaviour {
 		if (timerStarted) {
 			timer += Time.deltaTime;
 			
+			// destroys touch "Touch to Begin" text GameObject
 			foreach (Transform child in gameObject.transform) {
 				Destroy (child.gameObject);
 			}
 			
 			if (timer > endChargeTime) {
-				PlayerMovement.SetMovementEnabled (true);
 				Destroy (gameObject);
 			}
 		}
@@ -36,9 +41,9 @@ public class BeginLevel : MonoBehaviour {
 	
 	public void OnMouseDown () {
 		enemies.SetActive (true);
+		gameController.SetActive (true);
+		
 		background.BeginScrolling ();
-		
-		
 		
 		StartTimer ();
 	}

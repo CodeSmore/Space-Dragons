@@ -12,7 +12,7 @@ public class ClingerBehavior : MonoBehaviour {
 	public Sprite normSprite;
 	public Sprite hitSprite;
 	
-	private Camera mainCamera;
+	private Camera foregroundCamera;
 	private SoundController enemySounds;
 	private GameObject player;
 	private float xMin, xMax, yMin, yMax;
@@ -24,12 +24,12 @@ public class ClingerBehavior : MonoBehaviour {
 	void Start () {
 		enemySounds = FindObjectOfType<SoundController>();
 		player = GameObject.FindGameObjectWithTag ("Player");
-		mainCamera = Camera.main;
-		float distance = transform.position.z - mainCamera.transform.position.z;
-		xMin = mainCamera.ViewportToWorldPoint (new Vector3(0, 0, distance)).x + padding;
-		xMax = mainCamera.ViewportToWorldPoint (new Vector3(1, 1, distance)).x - padding;
-		yMin = mainCamera.ViewportToWorldPoint (new Vector3(0, 0, distance)).y + padding;
-		yMax = mainCamera.ViewportToWorldPoint (new Vector3(1, 1f, distance)).y - padding;
+		foregroundCamera = GameObject.Find ("Foreground Camera").GetComponent<Camera>();;
+		float distance = transform.position.z - foregroundCamera.transform.position.z;
+		xMin = foregroundCamera.ViewportToWorldPoint (new Vector3(0, 0, distance)).x + padding;
+		xMax = foregroundCamera.ViewportToWorldPoint (new Vector3(1, 1, distance)).x - padding;
+		yMin = foregroundCamera.ViewportToWorldPoint (new Vector3(0, 0, distance)).y + padding;
+		yMax = foregroundCamera.ViewportToWorldPoint (new Vector3(1, 1f, distance)).y - padding;
 		
 		
 	}
@@ -42,7 +42,7 @@ public class ClingerBehavior : MonoBehaviour {
 			this.GetComponent<SpriteRenderer>().sprite = normSprite;
 		}
 		
-		// Only fires when clinger is in view of Camera.main, other wise the fire order is canceled
+		// Only fires when clinger is in view of foregroundCamera, other wise the fire order is canceled
 		if (ClingerIsInView () /* in screen view */) {
 			if (!IsInvoking ("Fire"))  {
 				InvokeRepeating ("Fire", 0.000001f, secondsBetweenShots);
@@ -58,7 +58,6 @@ public class ClingerBehavior : MonoBehaviour {
 		// Projectile is Instantiated and set to 'beam' so it can be manipulated.
 		beam = Instantiate (weapon, transform.position, Quaternion.identity) as GameObject;
 		Vector3 vectorToTarget = (player.transform.position - transform.position);
-		vectorToTarget.Normalize ();
 		
 		movementForce = vectorToTarget * weaponSpeed;
 		beam.GetComponent<Rigidbody2D>().AddForce (movementForce);
