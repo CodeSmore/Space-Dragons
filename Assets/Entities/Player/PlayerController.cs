@@ -229,9 +229,9 @@ public class PlayerController : MonoBehaviour {
 		// If we are correct and it is a weapon, then we take damage
 		// and destroy the weapon.
 		if (collisionObject.tag == "PowerUp") {
-			if (collisionObject.name == "Shield Drop") {
+			if (collisionObject.GetComponent<ShieldPowerDrop>()) {
 				SpawnShield ();
-			} else if (collisionObject.name == "Laser PowerUp") {
+			} else if (collisionObject.GetComponent<LaserPowerDrop>()) {
 				laserLevel = Mathf.Clamp (++laserLevel, 1, 4);
 			}
 			

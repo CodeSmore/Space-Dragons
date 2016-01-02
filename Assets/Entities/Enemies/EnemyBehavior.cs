@@ -20,7 +20,7 @@ public class EnemyBehavior : MonoBehaviour {
 	private static int numEnemiesDestroyed = 0;
 	private float timer = 0;
 	
-	public GameObject shieldDrop;
+	public GameObject powerDrop;
 	public float dropRate = 0.05f;
 	public float dropSpeed = 2;
 	
@@ -152,7 +152,7 @@ public class EnemyBehavior : MonoBehaviour {
 		float probability = dropRate;
 		float random = Random.value;
 		
-		if (numEnemiesDestroyed >= 6 && random <= probability) {
+		if (random <= probability) {
 			DropShit ();
 		}
 		
@@ -163,7 +163,9 @@ public class EnemyBehavior : MonoBehaviour {
 	}
 	
 	void DropShit () {
-		Instantiate (shieldDrop, transform.position, Quaternion.identity);
+		if (powerDrop) {
+			Instantiate (powerDrop, transform.position, Quaternion.identity);
+		}
 	}
 	
 	public static int getNumEnemiesDestroyed () {

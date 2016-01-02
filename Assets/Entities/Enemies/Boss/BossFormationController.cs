@@ -92,9 +92,7 @@ public class BossFormationController : MonoBehaviour {
 			endTimer += Time.deltaTime;
 						
 			foreach (Transform child in transform) {
-				if (child.childCount > 0) {
-					Destroy (child.transform.GetChild (0).gameObject);
-				}
+					Destroy (child.gameObject);
 			}
 			
 			if (endTimer >= 3f) {
