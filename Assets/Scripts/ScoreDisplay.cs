@@ -11,8 +11,5 @@ public class ScoreDisplay : MonoBehaviour {
 		
 		// alters 'myText' to be the score as a string
 		myText.text = ScoreKeeper.getScore().ToString ();
-		
-		// resets the score
-		ScoreKeeper.Reset ();
 	}
 }

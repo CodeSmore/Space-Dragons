@@ -44,8 +44,6 @@ public class MusicPlayer : MonoBehaviour {
 	// Function/method/WHATEVER!!1111!1!!...that executes when a NEW scene loads.
 	// (doesn't execute on intial scene loaded)
 	void OnLevelWasLoaded (int level) {
-		Debug.Log ("OnLevelWasLoaded works for level: " + level);
-		
 		// Verifies that 'music' exists. 
 		// W/O it, a NullReferenceException error occurs when the 'Start Menu' 
 		// attempts to load after the first playthrough.
@@ -60,12 +58,12 @@ public class MusicPlayer : MonoBehaviour {
 				music.Play ();
 			}
 			
-			if (music && level > 3) {
+			if (music && level > 4) {
 				music.Stop ();
 				
 				// Changes 
 				
-				if (level == 4) {
+				if (level == 5) {
 					music.clip = gameClip;
 				} else {
 					music.clip = endClip;

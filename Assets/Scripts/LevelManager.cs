@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour {
 
@@ -8,15 +9,15 @@ public class LevelManager : MonoBehaviour {
 	}
 	// Loads a new scene based on the entered name.
 	public void LoadLevel(string name){
-		Application.LoadLevel (name);
+		SceneManager.LoadScene (name);
 	}
 	
 	public void LoadLevel (int level) {
-		Application.LoadLevel (level);
+		SceneManager.LoadScene (level);
 	}
 	
 	public void LoadNextLevel () {
-		Application.LoadLevel (Application.loadedLevel + 1);
+		SceneManager.LoadScene (SceneManager.GetActiveScene().buildIndex + 1);
 	}
 
 	// Quits the game. Only works in finished builds.

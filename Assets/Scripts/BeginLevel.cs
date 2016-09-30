@@ -39,13 +39,23 @@ public class BeginLevel : MonoBehaviour {
 	}
 	
 	
-	public void OnMouseDown () {
+	public void LaunchShip () {
 		enemies.SetActive (true);
 		gameController.SetActive (true);
 		
 		background.BeginScrolling ();
 		
 		StartTimer ();
+	}
+
+	public void OnMouseDrag () {
+		if (timerStarted) {
+			Time.timeScale = 3;
+		}
+	}
+
+	public void OnMouseUp () {
+		Time.timeScale = 1;
 	}
 	
 	void StartTimer () {

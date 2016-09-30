@@ -20,10 +20,12 @@ public class OptionsController : MonoBehaviour {
 			godModeText.text = "OFF";
 		} 
 		
-		if (musicPlayer.paused == true) {
-			musicText.text = "OFF";
-		} else {
-			musicText.text = "ON";
+		if (musicPlayer) {
+			if( musicPlayer.paused == true) {
+				musicText.text = "OFF";
+			} else {
+				musicText.text = "ON";
+			}
 		} 
 	}
 	

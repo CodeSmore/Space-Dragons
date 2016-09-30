@@ -4,13 +4,15 @@ using System.Collections;
 public class SplashManager : MonoBehaviour {
 
 	public float timer;
-	
-	private LevelManager levelManager;
+
 	public GUITexture sketch;
+
+	private LevelManager levelManager;
+
 	// Use this for initialization
 	void Start () {
+		levelManager = GameObject.FindObjectOfType<LevelManager>();
 		timer = 0;
-		levelManager = FindObjectOfType<LevelManager>();
 	}
 	
 	// Update is called once per frame

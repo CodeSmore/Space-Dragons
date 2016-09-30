@@ -340,9 +340,7 @@ public class PlayerController : MonoBehaviour {
 	
 	public void DestroyChildren () {
 		foreach (Transform child in transform) {
-			Debug.Log (child.gameObject + " was destroyed by DestroyChildren ()");
 			Destroy (child.gameObject);
-			
 		}
 	}
 }
