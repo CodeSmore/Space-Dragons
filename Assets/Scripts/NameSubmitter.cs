@@ -16,6 +16,6 @@ public class NameSubmitter : MonoBehaviour {
 	public void SubmitName () {
 		PlayerPrefsManager.SetPlayerName(nameInputText.text);
 
-		levelManager.LoadLevel("Test Lvl 2");
+		levelManager.LoadLevel("Test Lvl 3");
 	}
 }

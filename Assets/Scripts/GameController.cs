@@ -7,6 +7,10 @@ public class GameController : MonoBehaviour {
 	
 	private GameObject bossSpawnTrigger;
 	private bool bossInScene = false;
+
+	// used to turn boss on and off
+	[SerializeField]
+	private bool bossEnabled = false;
 		
 	// Use this for initialization
 	void Start () {
@@ -15,7 +19,7 @@ public class GameController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (!bossSpawnTrigger && !bossInScene) {
+		if (!bossSpawnTrigger && !bossInScene && bossEnabled) {
 			Instantiate (boss);
 			bossInScene = true;
 		}

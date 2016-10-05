@@ -79,7 +79,11 @@ public class DroneBehavior : MonoBehaviour {
 		float probability = dropRate;
 		float random = Random.value;
 		
-		if (numEnemiesDestroyed >= 6 && random <= probability) {
+		if (probability < 1) {
+			if (numEnemiesDestroyed >= 6 && random <= probability) {
+				DropShit ();
+			}
+		} else {
 			DropShit ();
 		}
 		

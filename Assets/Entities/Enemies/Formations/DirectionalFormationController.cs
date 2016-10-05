@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FormationController : MonoBehaviour {
+public class DirectionalFormationController : MonoBehaviour {
 
 	// Takes the enemy prefab so it can be instantiated within this method.
 	public GameObject enemyPrefab;
@@ -10,15 +10,16 @@ public class FormationController : MonoBehaviour {
 	
 	// Determines the size of the formation on the screen.
 	public float width = 10, height = 5;
-	
-	// The speed the entire formation moves.
-	public float horizontalSpeed = 10;
-	// Place holder used so it can be activated after spawns
-	private float currentHorizontalSpeed = 0;
 
+	// speed of decent before spawn
+	[SerializeField]
+	private float preSpawnSpeed = -4;
+	// speed and direction units move post-spawn
+	private Vector2 postSpawnVelocity;
+	[SerializeField]
+	private Transform velocityGuide = null;
 
-	public float downwardsSpeed = 1;
-	public float spawnedVerticalSpeed = 1;
+	private bool isSpawned = false;
 	
 	// Used to create an extra boundary in case the formation leaves the camera view.
 	private float padding = 0.7f;
@@ -66,15 +67,25 @@ public class FormationController : MonoBehaviour {
 		if (formationLeftEdge < boundaryLeftEdge) {
 			direction = 1; 
 		}
-		// This single statement determines the movement of the formation in the x direction.
+		// Controls movement of formation 
 		// Extra: Movement is based on last know position + conversion from /frame to /second * direction (+1 or -1) * speed.
 		
-		
-		this.transform.position = new Vector3 (
-			transform.position.x + Time.deltaTime * direction * currentHorizontalSpeed, 
-			this.transform.position.y + Time.deltaTime * downwardsSpeed,
-			0
-		);
+		if (!isSpawned) {
+			this.transform.position = new Vector3 (
+				transform.position.x, 
+				this.transform.position.y + Time.deltaTime * preSpawnSpeed,
+				0
+			);
+		} else {
+			Vector2 velocityMagnitude = velocityGuide.position - transform.position;
+
+			this.transform.position = new Vector3 (
+				transform.position.x + Time.deltaTime * velocityMagnitude.x, 
+				this.transform.position.y + Time.deltaTime * velocityMagnitude.y,
+				0
+			);
+		}
+
 		
 		UpdateBoundaries();
 		
@@ -197,7 +208,6 @@ public class FormationController : MonoBehaviour {
 	}
 
 	public void ActivateSpawnSpeeds () {
-		currentHorizontalSpeed = horizontalSpeed;
-		downwardsSpeed = spawnedVerticalSpeed;
+		isSpawned = true;
 	}
 }

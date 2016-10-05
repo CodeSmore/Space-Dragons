@@ -19,6 +19,10 @@ public class Scroller : MonoBehaviour {
 	private Vector3 startPosition;
 	private bool detachmentHasOccured = false;
 	public float timeSinceIsActive = 0;
+
+	// position where intro scroll ends
+	[SerializeField]
+	private int endPos = -540;
 	
 	void Start ()
 	{
@@ -67,7 +71,7 @@ public class Scroller : MonoBehaviour {
 			}
 		}
 		
-		if (transform.position.y <= -540 && !detachmentHasOccured) {
+		if (transform.position.y <= endPos && !detachmentHasOccured) {
 			speedScale = spaceScrollScale;
 			if (playerAnim) {
 				playerAnim.SetTrigger ("DetachmentTrigger");

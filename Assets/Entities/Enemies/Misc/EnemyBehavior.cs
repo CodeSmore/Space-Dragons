@@ -18,7 +18,7 @@ public class EnemyBehavior : MonoBehaviour {
 	public int scoreValue = 150;
 	// Number of enemies destroyed
 	private static int numEnemiesDestroyed = 0;
-	private float timer = 0;
+	private float hitTimer = 0;
 	
 	public GameObject powerDrop;
 	public float dropRate = 0.05f;
@@ -26,14 +26,14 @@ public class EnemyBehavior : MonoBehaviour {
 	
 	// Rate of fire, lower number makes it go faster!
 	public float projectileRepeatRate = 2;
-	
+
 	// ScoreKeeper and SoundController objects brought in to utilize their methods.
 	private ScoreKeeper scoreKeeper;
 	private SoundController enemySounds; 
 	
 	void Start () {
-		// Reset 'timer'
-		timer = 0;
+		// Reset 'hitTimer'
+		hitTimer = 0;
 		
 		maxHealth = health;
 		// So, two ways to grab a script. The first is more specific, including the actual 
@@ -42,8 +42,8 @@ public class EnemyBehavior : MonoBehaviour {
 		scoreKeeper = GameObject.Find("Score").GetComponent<ScoreKeeper>();
 		enemySounds = FindObjectOfType<SoundController>();
 		
-		
-		InvokeRepeating ("Fire", 0.000001f, projectileRepeatRate);
+	
+		InvokeRepeating ("Fire", 1, projectileRepeatRate);
 	}
 	
 	void Update () {	
@@ -51,9 +51,9 @@ public class EnemyBehavior : MonoBehaviour {
 		// to the variable nature of framerate.
 		float probability = Time.deltaTime * shotsPerSecond;
 		
-		timer += Time.deltaTime;
+		hitTimer += Time.deltaTime;
 		
-		if (timer >= .1) {
+		if (hitTimer >= .1) {
 			this.GetComponent<SpriteRenderer>().sprite = normSprite;
 		}
 	}
@@ -132,7 +132,7 @@ public class EnemyBehavior : MonoBehaviour {
 			health -= missile.GetDamage();
 			
 			this.GetComponent<SpriteRenderer>().sprite = hitSprite;
-			timer = 0;
+			hitTimer = 0;
 			
 			enemySounds.EnemyDamageSound ();
 		}

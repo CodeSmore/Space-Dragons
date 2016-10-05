@@ -8,17 +8,21 @@ public class Spawner : MonoBehaviour {
 	private Position childPositionScript;
 	
 	private Camera foregroundCamera;
+
+	private FormationController formationController;
 	
 	private bool spawned = false;
 	
 	// Use this for initialization
 	void Start () {
 		foregroundCamera = GameObject.Find ("Foreground Camera").GetComponent<Camera>();
+		formationController = GetComponent<FormationController>();
 	}
 	
 	void Update () {
-		if (!spawned && transform.position.y < foregroundCamera.ViewportToWorldPoint (new Vector3 (0, 1, 0)).y) {
+		if (!spawned && transform.position.y < foregroundCamera.ViewportToWorldPoint (new Vector3 (0, 1, 0)).y + 5) {
 			SpawnEnemies ();
+			formationController.ActivateSpawnSpeeds();
 		}
 	}
 	
